@@ -24,6 +24,9 @@ The goals for this project are to:
 ![Pytest Badge](https://img.shields.io/badge/Pytest-0A9EDC?logo=pytest&logoColor=fff&style=plastic)
 ![Material for MkDocs Badge](https://img.shields.io/badge/Material%20for%20MkDocs-526CFE?logo=materialformkdocs&logoColor=fff&style=plastic)
 
+## About the dataset
+
+
 ## Commands
 
 The Makefile contains the central entry points for common tasks related to this project.

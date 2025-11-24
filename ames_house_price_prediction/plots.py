@@ -1,10 +1,12 @@
+"""Plotting utilities."""
+
 from pathlib import Path
 
 import typer
 from loguru import logger
 from tqdm import tqdm
 
-from ames_house_price_prediction.config import FIGURES_DIR, PROCESSED_DATA_DIR
+from ames_house_price_prediction.config.paths import FIGURES_DIR, PROCESSED_DATA_DIR
 
 app = typer.Typer()
 

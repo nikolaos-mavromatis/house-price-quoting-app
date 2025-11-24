@@ -1,29 +1,20 @@
+"""Feature generation script using the new modular architecture."""
+
 from pathlib import Path
 
-from sklearn.impute import SimpleImputer
+import pandas as pd
 import typer
 from loguru import logger
-import pandas as pd
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import (
-    OneHotEncoder,
-    OrdinalEncoder,
-    RobustScaler,
-    PolynomialFeatures,
-)
-from pickle import dump
 
 from ames_house_price_prediction.config import (
-    CAT_FEATURES,
-    MODELS_DIR,
-    NUM_FEATURES,
-    ORD_FEATURES,
+    PREPROCESSOR_PATH,
     PROCESSED_DATA_DIR,
     TARGET,
 )
-from ames_house_price_prediction.features.utils import make_features
-
+from ames_house_price_prediction.core.feature_transformer import (
+    HouseFeaturesTransformer,
+)
+from ames_house_price_prediction.core.preprocessing import SklearnPreprocessor
 
 app = typer.Typer()
 
@@ -31,57 +22,34 @@ app = typer.Typer()
 @app.command()
 def main(
     input_path: Path = PROCESSED_DATA_DIR / "dataset.parquet",
-    preprocessor_path: Path = MODELS_DIR / "preprocessor.pkl",
+    preprocessor_path: Path = PREPROCESSOR_PATH,
     features_path: Path = PROCESSED_DATA_DIR / "features.parquet",
     labels_path: Path = PROCESSED_DATA_DIR / "labels.parquet",
 ):
+    """Generate features from dataset and save the fitted preprocessor.
+
+    Args:
+        input_path: Path to input dataset
+        preprocessor_path: Path to save the fitted preprocessor
+        features_path: Path to save the transformed features
+        labels_path: Path to save the target labels
+    """
     logger.info("Generating features from dataset...")
     input_df = pd.read_parquet(input_path)
 
-    df = input_df.pipe(make_features)
+    # Apply feature engineering
+    feature_transformer = HouseFeaturesTransformer()
+    df = feature_transformer.transform(input_df)
 
-    numeric_transformer = Pipeline(
-        steps=[("imputer", SimpleImputer(strategy="median")), ("scaler", RobustScaler())]
-    )
-    ordinal_transformer = Pipeline(
-        steps=[
-            (
-                "ord_encoding",
-                OrdinalEncoder(
-                    dtype=int,
-                    categories=len(ORD_FEATURES) * [["Po", "Fa", "TA", "Gd", "Ex"]],
-                    handle_unknown="use_encoded_value",
-                    unknown_value=-1,
-                ),
-            )
-        ]
-    )
-    categorical_transformer = Pipeline(
-        steps=[
-            ("oh_encoding", OneHotEncoder(drop="first", sparse_output=False)),
-        ]
-    )
+    # Create and fit preprocessor
+    preprocessor = SklearnPreprocessor()
+    transformed_df = preprocessor.fit_transform(df)
 
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ("num", numeric_transformer, NUM_FEATURES),
-            ("ord", ordinal_transformer, ORD_FEATURES),
-            ("cat", categorical_transformer, CAT_FEATURES),
-        ],
-        remainder="drop",
-        verbose_feature_names_out=False,
-    )
-    pipe = Pipeline(
-        steps=[
-            ("preprocessor", preprocessor),
-            ("poly", PolynomialFeatures(2, include_bias=True)),
-        ]
-    )
-    transformed_df = pd.DataFrame(pipe.fit_transform(df), columns=pipe.get_feature_names_out())
+    # Save the fitted preprocessor
+    preprocessor.save(preprocessor_path)
+    logger.info(f"Saved preprocessor to {preprocessor_path}")
 
-    with open(preprocessor_path, "wb") as f:
-        dump(pipe, f, protocol=5)
-
+    # Save features and labels
     transformed_df.to_parquet(features_path, index=False)
     df[[TARGET]].to_parquet(labels_path, index=False)
 

@@ -1,10 +1,12 @@
+"""Dataset preparation script."""
+
 from pathlib import Path
 
+import pandas as pd
 import typer
 from loguru import logger
-import pandas as pd
 
-from ames_house_price_prediction.config import PROCESSED_DATA_DIR, RAW_DATA_DIR
+from ames_house_price_prediction.config.paths import PROCESSED_DATA_DIR, RAW_DATA_DIR
 from ames_house_price_prediction.data.utils import clean_dataset
 
 app = typer.Typer()
