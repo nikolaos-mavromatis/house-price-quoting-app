@@ -160,28 +160,66 @@ house-price-quoting-app/
 │   │   ├── model.py              # Model implementation
 │   │   └── service.py            # Prediction service
 │   ├── data/                      # Data preparation
-│   ├── features/                  # Feature engineering scripts
+│   │   ├── dataset.py            # Dataset loading & validation
+│   │   └── utils.py              # Data utilities
+│   ├── features/                  # Feature engineering
+│   │   ├── features.py           # Feature transformation
+│   │   └── utils.py              # Feature utilities
 │   ├── modeling/                  # Training & inference
-│   └── utils/                     # Utilities (logging, etc.)
+│   │   ├── train.py              # Model training
+│   │   └── predict.py            # Prediction inference
+│   ├── validation/                # Data validation
+│   │   ├── expectations.py       # Great Expectations suites
+│   │   ├── validators.py         # Validation helpers
+│   │   └── custom_expectations.py # Custom validation logic
+│   ├── utils/                     # Utilities
+│   │   └── logging.py            # Logging configuration
+│   └── engine.py                  # Complete ML pipeline
 ├── api/                           # FastAPI service
-│   ├── main.py                   # REST API endpoints
-│   └── Dockerfile-fastapi        # API container
+│   └── main.py                   # REST API endpoints
 ├── app/                           # Streamlit frontend
-│   ├── main.py                   # Web UI
-│   └── Dockerfile-streamlit      # UI container
+│   └── main.py                   # Web UI
 ├── data/                          # Data artifacts
 │   ├── raw/                      # Original datasets
+│   │   ├── train.csv             # Training data
+│   │   └── test.csv              # Test data
 │   ├── processed/                # Processed outputs
+│   │   ├── dataset.parquet       # Prepared dataset
+│   │   ├── features.parquet      # Engineered features
+│   │   └── labels.parquet        # Target labels
 │   └── interim/                  # Intermediate data
 ├── models/                        # Trained models
 │   ├── model.pkl                 # Ridge regression model
 │   └── preprocessor.pkl          # Preprocessing pipeline
+├── tests/                         # Test suite (136 tests, 83% coverage)
+│   ├── unit/                     # Unit tests
+│   │   ├── test_config/          # Config tests
+│   │   ├── test_core/            # Core component tests
+│   │   ├── test_data/            # Data preparation tests
+│   │   ├── test_features/        # Feature engineering tests
+│   │   └── test_validation/      # Validation tests
+│   ├── integration/              # Integration tests
+│   │   ├── test_api.py           # API endpoint tests
+│   │   └── test_prediction_pipeline.py  # Pipeline tests
+│   └── e2e/                      # End-to-end tests
+│       └── test_complete_pipeline.py    # Full workflow tests
 ├── docs/                          # Documentation
+│   ├── DATA_VALIDATION.md        # Validation guide
+│   ├── getting-started.md        # Quick start guide
+│   └── methodology.md            # ML methodology
 ├── notebooks/                     # Jupyter notebooks
+│   └── EDA.ipynb                 # Exploratory data analysis
+├── references/                    # Reference materials
+│   └── data_description.txt      # Dataset documentation
 ├── docker-compose.yml            # Multi-container orchestration
+├── dockerfile-fastapi            # FastAPI container definition
+├── dockerfile-streamlit          # Streamlit container definition
+├── pyproject.toml                # Project config & dependencies
 ├── requirements.lock             # Production dependencies (uv)
 ├── requirements-dev.lock         # Development dependencies (uv)
-└── pyproject.toml                # Project configuration & dependencies
+├── .uvrc                         # UV quick reference
+├── UV_MIGRATION.md               # UV migration guide
+└── README.md                     # This file
 ```
 
 ---
