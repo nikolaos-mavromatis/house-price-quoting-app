@@ -1,652 +1,115 @@
 # 🏠 AMES House Price Prediction
 
 <p align="center">
-  <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" alt="CCDS"/>
-  <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black"/>
   <img src="https://img.shields.io/badge/Python-3.12-blue.svg" alt="Python 3.12"/>
   <img src="https://img.shields.io/badge/FastAPI-0.122-009688.svg" alt="FastAPI"/>
   <img src="https://img.shields.io/badge/Streamlit-1.51-FF4B4B.svg" alt="Streamlit"/>
   <img src="https://img.shields.io/badge/coverage-83%25-brightgreen.svg" alt="Test Coverage: 83%"/>
-  <img src="https://img.shields.io/badge/tests-136%20passed-brightgreen.svg" alt="Tests: 136 passed"/>
 </p>
 
 <p align="center">
-  <strong>A production-ready machine learning system for predicting house prices with a modern, modular architecture.</strong>
+  <strong>A production-ready machine learning system for predicting house prices using the AMES Housing dataset.</strong>
 </p>
-
-<p align="center">
-  <a href="#-features">Features</a> •
-  <a href="#-quick-start">Quick Start</a> •
-  <a href="#-architecture">Architecture</a> •
-  <a href="#-usage">Usage</a> •
-  <a href="#-api-documentation">API</a> •
-  <a href="#-development">Development</a>
-</p>
-
----
-
-## 🌟 Features
-
-- **🎯 Accurate Predictions**: Ridge regression with polynomial features for robust price predictions
-- **🔌 RESTful API**: FastAPI-based service with automatic OpenAPI documentation
-- **🖥️ Interactive UI**: Beautiful Streamlit web interface for easy predictions
-- **🏗️ Modular Architecture**: Clean abstractions with dependency injection for easy testing and extension
-- **🐳 Docker Ready**: One-command deployment with Docker Compose
-- **📊 Feature Engineering**: Automated feature transformation pipeline
-- **✅ Production Ready**: Input validation, error handling, and comprehensive logging
-- **🧪 Thoroughly Tested**: 98 tests with 94% code coverage (unit, integration, and E2E)
-- **🔍 Data Validation**: Great Expectations integration for schema and quality validation
 
 ---
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- Docker and Docker Compose (recommended)
-- OR Python 3.12+ and uv package manager
-
-### Option 1: Docker Compose (Recommended)
-
-**Get up and running in 30 seconds:**
+Get up and running in 30 seconds with Docker:
 
 ```bash
-# Clone the repository
 git clone <repository-url>
 cd house-price-quoting-app
-
-# Start all services
-docker-compose up --build
+docker compose up
 ```
 
-That's it! 🎉 The application is now running:
+Access the services:
+- **📚 Documentation**: http://localhost:8002
+- **🖥️ Streamlit UI**: http://localhost:8501
+- **🔌 API**: http://localhost:8000
+- **📖 API Docs**: http://localhost:8000/docs
 
-- **Streamlit UI**: http://localhost:8501
-- **FastAPI**: http://localhost:8000
-- **API Docs**: http://localhost:8000/docs
+## ✨ What's Included
 
-### Option 2: Local Development Setup
+- **Machine Learning Pipeline**: Ridge regression with engineered features
+- **RESTful API**: FastAPI service with automatic OpenAPI documentation
+- **Web Interface**: Streamlit app for interactive predictions
+- **Data Validation**: Great Expectations for data quality checks
+- **Comprehensive Testing**: 136 tests with 83% coverage
+- **Docker Deployment**: One-command setup for all services
 
-This project uses [uv](https://github.com/astral-sh/uv) for fast, reliable dependency management.
+## 📖 Documentation
+
+For detailed information, visit the full documentation at **http://localhost:8002** after starting the services.
+
+The documentation includes:
+- **[Tutorials](http://localhost:8002/tutorials/)** - Step-by-step guides to get started
+- **[How-To Guides](http://localhost:8002/how-to/)** - Practical recipes for common tasks
+- **[Reference](http://localhost:8002/reference/)** - Technical API and configuration details
+- **[Explanation](http://localhost:8002/explanation/)** - Deep dives into architecture and design decisions
+
+## 🛠️ Development
+
+### Local Setup (Without Docker)
+
+Requires Python 3.12+ and [uv](https://github.com/astral-sh/uv) package manager:
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd house-price-quoting-app
-
-# Install uv (if not already installed)
+# Install uv
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Create virtual environment
+# Create environment and install dependencies
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install production dependencies
-uv pip sync requirements.lock
-
-# OR install with development dependencies
+source .venv/bin/activate
 uv pip sync requirements-dev.lock
 
-# Run the complete ML pipeline (optional - pre-trained models included)
-python -m ames_house_price_prediction.engine
+# Run tests
+pytest
 
-# Start the API
-cd api
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-
-# In a new terminal, start the Streamlit app
-cd app
-streamlit run main.py
+# Start services
+cd api && uvicorn main:app --reload &
+cd app && streamlit run main.py
 ```
 
----
+### Running Tests
 
-## 🏗️ Architecture
-
-### System Overview
-
-```
-┌─────────────────┐      HTTP        ┌──────────────┐
-│  Streamlit UI   │ ◄──────────────► │   FastAPI    │
-│  (Port 8501)    │                  │  (Port 8000) │
-└─────────────────┘                  └───────┬──────┘
-                                             │
-                                             ▼
-                                    ┌────────────────┐
-                                    │   Prediction   │
-                                    │    Service     │
-                                    └────────┬───────┘
-                                             │
-                    ┌────────────────────────┼────────────────────────┐
-                    ▼                        ▼                        ▼
-            ┌───────────────┐      ┌─────────────────┐     ┌──────────────┐
-            │   Feature     │      │  Preprocessor   │     │    Model     │
-            │  Transformer  │      │   (Pipeline)    │     │   (Ridge)    │
-            └───────────────┘      └─────────────────┘     └──────────────┘
+```bash
+pytest                    # Run all tests
+pytest -v                 # Verbose output
+pytest --cov              # With coverage report
 ```
 
-### Modular Design
-
-The project follows a clean, layered architecture:
-
-- **`config/`** - Separated configuration (paths, features, models, settings)
-- **`core/`** - Reusable abstractions and implementations
-  - Abstract interfaces (Model, Preprocessor, FeatureTransformer)
-  - PredictionService for orchestration
-- **`data/`** - Data preparation and cleaning
-- **`features/`** - Feature engineering pipeline
-- **`modeling/`** - Model training and inference
-- **`api/`** - FastAPI REST service
-- **`app/`** - Streamlit web interface
-
-📖 **[Read the full architecture documentation](ARCHITECTURE.md)**
-
----
+See the [Testing Guide](http://localhost:8002/how-to/run-tests/) for more details.
 
 ## 📦 Project Structure
 
 ```
-house-price-quoting-app/
-├── ames_house_price_prediction/    # Core ML library
-│   ├── config/                     # Configuration modules
-│   │   ├── paths.py               # Directory paths
-│   │   ├── features.py            # Feature definitions
-│   │   ├── models.py              # Model configurations
-│   │   └── settings.py            # Application settings
-│   ├── core/                      # Core abstractions
-│   │   ├── interfaces.py          # Abstract base classes
-│   │   ├── feature_transformer.py # Feature engineering
-│   │   ├── preprocessing.py       # Data preprocessing
-│   │   ├── model.py              # Model implementation
-│   │   └── service.py            # Prediction service
-│   ├── data/                      # Data preparation
-│   │   ├── dataset.py            # Dataset loading & validation
-│   │   └── utils.py              # Data utilities
-│   ├── features/                  # Feature engineering
-│   │   ├── features.py           # Feature transformation
-│   │   └── utils.py              # Feature utilities
-│   ├── modeling/                  # Training & inference
-│   │   ├── train.py              # Model training
-│   │   └── predict.py            # Prediction inference
-│   ├── validation/                # Data validation
-│   │   ├── expectations.py       # Great Expectations suites
-│   │   ├── validators.py         # Validation helpers
-│   │   └── custom_expectations.py # Custom validation logic
-│   ├── utils/                     # Utilities
-│   │   └── logging.py            # Logging configuration
-│   └── engine.py                  # Complete ML pipeline
-├── api/                           # FastAPI service
-│   └── main.py                   # REST API endpoints
-├── app/                           # Streamlit frontend
-│   └── main.py                   # Web UI
-├── data/                          # Data artifacts
-│   ├── raw/                      # Original datasets
-│   │   ├── train.csv             # Training data
-│   │   └── test.csv              # Test data
-│   ├── processed/                # Processed outputs
-│   │   ├── dataset.parquet       # Prepared dataset
-│   │   ├── features.parquet      # Engineered features
-│   │   └── labels.parquet        # Target labels
-│   └── interim/                  # Intermediate data
-├── models/                        # Trained models
-│   ├── model.pkl                 # Ridge regression model
-│   └── preprocessor.pkl          # Preprocessing pipeline
-├── tests/                         # Test suite (136 tests, 83% coverage)
-│   ├── unit/                     # Unit tests
-│   │   ├── test_config/          # Config tests
-│   │   ├── test_core/            # Core component tests
-│   │   ├── test_data/            # Data preparation tests
-│   │   ├── test_features/        # Feature engineering tests
-│   │   └── test_validation/      # Validation tests
-│   ├── integration/              # Integration tests
-│   │   ├── test_api.py           # API endpoint tests
-│   │   └── test_prediction_pipeline.py  # Pipeline tests
-│   └── e2e/                      # End-to-end tests
-│       └── test_complete_pipeline.py    # Full workflow tests
-├── docs/                          # Documentation
-│   ├── DATA_VALIDATION.md        # Validation guide
-│   ├── getting-started.md        # Quick start guide
-│   └── methodology.md            # ML methodology
-├── notebooks/                     # Jupyter notebooks
-│   └── EDA.ipynb                 # Exploratory data analysis
-├── references/                    # Reference materials
-│   └── data_description.txt      # Dataset documentation
-├── docker-compose.yml            # Multi-container orchestration
-├── dockerfile-fastapi            # FastAPI container definition
-├── dockerfile-streamlit          # Streamlit container definition
-├── pyproject.toml                # Project config & dependencies
-├── requirements.lock             # Production dependencies (uv)
-├── requirements-dev.lock         # Development dependencies (uv)
-├── .uvrc                         # UV quick reference
-├── UV_MIGRATION.md               # UV migration guide
-└── README.md                     # This file
+├── api/                          # FastAPI service
+├── app/                          # Streamlit web interface
+├── ames_house_price_prediction/  # Core ML package
+│   ├── core/                     # Model training and prediction
+│   ├── data/                     # Data loading and preprocessing
+│   ├── features/                 # Feature engineering
+│   └── validation/               # Data validation with Great Expectations
+├── data/                         # Dataset storage
+├── docs/                         # MkDocs documentation
+├── models/                       # Trained model artifacts
+└── tests/                        # Test suite
 ```
-
----
-
-## 💻 Usage
-
-### Using the Web Interface
-
-1. Open http://localhost:8501 in your browser
-2. Fill in the house characteristics:
-   - **Lot Area**: Size in square feet
-   - **Year Built**: Original construction date
-   - **Remodeled Year**: Year of last remodel (optional)
-   - **Overall Quality**: Rating from 1-10
-   - **Overall Condition**: Rating from 1-10
-3. Click "Quote me now!" to get your prediction
-
-### Using the API
-
-#### cURL Example
-
-```bash
-curl -X GET "http://localhost:8000/quote/?LotArea=8450&YearBuilt=2003&YearRemodAdd=2003&OverallQual=7&OverallCond=5"
-```
-
-#### Python Example
-
-```python
-import requests
-
-response = requests.get(
-    "http://localhost:8000/quote/",
-    params={
-        "LotArea": 8450,
-        "YearBuilt": 2003,
-        "YearRemodAdd": 2003,
-        "OverallQual": 7,
-        "OverallCond": 5,
-    }
-)
-
-result = response.json()
-print(f"Predicted price: ${result['predicted_price']:,.2f}")
-```
-
-#### POST Request with JSON
-
-```python
-import requests
-
-response = requests.post(
-    "http://localhost:8000/quote/",
-    json={
-        "LotArea": 8450,
-        "YearBuilt": 2003,
-        "YearRemodAdd": 2003,
-        "OverallQual": 7,
-        "OverallCond": 5,
-    }
-)
-```
-
-### Using the Prediction Service Programmatically
-
-```python
-from ames_house_price_prediction.core.service import PredictionService
-
-# Load the service with trained models
-service = PredictionService.from_files()
-
-# Single prediction
-price = service.predict_single(
-    LotArea=8450,
-    YearBuilt=2003,
-    YearRemodAdd=2003,
-    YrSold=2024,
-    OverallQual=7,
-    OverallCond=5
-)
-print(f"Predicted price: ${price:,.2f}")
-
-# Batch predictions
-import pandas as pd
-data = pd.DataFrame([...])
-predictions = service.predict(data)
-```
-
----
-
-## 📚 API Documentation
-
-### Interactive API Documentation
-
-Visit http://localhost:8000/docs for the auto-generated Swagger UI documentation.
-
-### Endpoints
-
-#### `GET /`
-Health check endpoint.
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "message": "House Price Quoting Service is running"
-}
-```
-
-#### `GET /quote/`
-Get a house price prediction using query parameters.
-
-**Parameters:**
-- `LotArea` (float): Lot size in square feet
-- `YearBuilt` (int): Original construction year
-- `YearRemodAdd` (int): Remodel year
-- `OverallQual` (int): Overall quality (1-10)
-- `OverallCond` (int): Overall condition (1-10)
-
-**Response:**
-```json
-{
-  "predicted_price": 184408.00,
-  "input_features": {
-    "LotArea": 8450,
-    "YearBuilt": 2003,
-    "YearRemodAdd": 2003,
-    "OverallQual": 7,
-    "OverallCond": 5
-  }
-}
-```
-
-#### `POST /quote/`
-Get a house price prediction using JSON body (same parameters as GET).
-
----
-
-## 🛠️ Development
-
-### Running the ML Pipeline
-
-```bash
-# Complete pipeline (data prep → features → training → predictions)
-python -m ames_house_price_prediction.engine
-
-# Individual steps with data validation
-python -m ames_house_price_prediction.data.dataset        # Prepare data (validates raw data)
-python -m ames_house_price_prediction.features.features   # Generate features (validates engineered features)
-python -m ames_house_price_prediction.modeling.train      # Train model
-python -m ames_house_price_prediction.modeling.predict    # Make predictions (validates test data)
-
-# Skip validation for debugging (not recommended for production)
-python -m ames_house_price_prediction.data.dataset --skip-validation
-python -m ames_house_price_prediction.features.features --skip-validation
-python -m ames_house_price_prediction.modeling.predict --skip-validation
-```
-
-### Data Validation
-
-The project uses **Great Expectations** for comprehensive data validation throughout the ML pipeline:
-
-```bash
-# Validation runs automatically in the pipeline
-python -m ames_house_price_prediction.data.dataset     # ✓ Validates raw data
-python -m ames_house_price_prediction.features.features # ✓ Validates engineered features
-python -m ames_house_price_prediction.modeling.predict  # ✓ Validates test data schema
-
-# Programmatic usage
-from ames_house_price_prediction.validation import validate_raw_data
-import pandas as pd
-
-df = pd.read_csv("data/raw/train.csv")
-result = validate_raw_data(df, include_target=True, fail_on_error=False)
-
-if result.success:
-    print("✓ Data validation passed")
-else:
-    print("✗ Validation failed:")
-    print(result.get_failure_summary())
-```
-
-**Validation Features**:
-- ✅ Schema validation (column presence, types)
-- ✅ Range validation (value bounds, outlier detection)
-- ✅ Cross-field validation (YearRemodAdd >= YearBuilt)
-- ✅ Business rule validation (house age < 200 years)
-- ✅ Derived feature validation (LotAge, YearsSinceRemod)
-- ✅ Data quality checks (NaN, infinite values)
-
-📖 **[Read the full Data Validation documentation](docs/DATA_VALIDATION.md)**
-
-### Running Tests
-
-The project includes a comprehensive test suite with **136 tests** achieving **83% code coverage**.
-
-```bash
-# Install test dependencies with uv
-uv pip sync requirements-dev.lock
-
-# Run all tests with coverage report
-uv run pytest
-
-# Run tests without coverage (faster)
-uv run pytest --no-cov
-
-# Run specific test categories
-uv run pytest -m unit              # Unit tests only (fast)
-uv run pytest -m integration       # Integration tests
-uv run pytest -m e2e              # End-to-end tests
-uv run pytest -m api              # API tests only
-
-# Run with verbose output
-uv run pytest -v
-
-# Run tests in parallel (faster)
-uv run pytest -n auto
-
-# Generate HTML coverage report
-uv run pytest --cov-report=html
-# View at: htmlcov/index.html
-```
-
-#### Test Structure
-
-- **Unit Tests**: Fast, isolated component tests with mocks
-  - Core components (feature transformer, preprocessing, model, service)
-  - Configuration modules
-  - Data preparation
-  - Feature engineering
-  - Validation logic
-
-- **Integration Tests**: Multi-component interactions
-  - Prediction pipeline tests (with real trained models)
-  - API endpoint tests (23 tests)
-
-- **E2E Tests (5 tests)**: Complete workflow validation
-  - Full training-to-prediction pipeline
-  - Model quality validation
-  - Reproducibility tests
-
-#### Coverage by Module
-
-| Module | Coverage |
-|--------|----------|
-| `config/*` | 100% |
-| `core/feature_transformer.py` | 100% |
-| `core/preprocessing.py` | 100% |
-| `core/service.py` | 100% |
-| `data/dataset.py` | 100% |
-| `features/features.py` | 100% |
-| `modeling/train.py` | 100% |
-| `modeling/predict.py` | 100% |
-| `validation/expectations.py` | 100% |
-| `core/model.py` | 95% |
-| `validation/validators.py` | 90% |
-| `api/main.py` | 88% |
-| `core/interfaces.py` | 76% |
-| `validation/custom_expectations.py` | 0% (not used) |
-| **Overall** | **83%** |
-
-#### Quick Verification Tests
-
-```bash
-# Import verification
-python -c "from ames_house_price_prediction.core.service import PredictionService; print('✓ All imports work')"
-
-# Component test
-python -c "
-from ames_house_price_prediction.core.service import PredictionService
-service = PredictionService.from_files()
-price = service.predict_single(LotArea=8450, YearBuilt=2003, YearRemodAdd=2003, YrSold=2024, OverallQual=7, OverallCond=5)
-print(f'✓ Prediction: \${price:,.2f}')
-"
-```
-
-### Dependency Management
-
-This project uses **uv** for fast, deterministic dependency resolution with separate production and development packages.
-
-#### Package Structure
-
-- **Production dependencies**: Core packages needed to run the application (FastAPI, Streamlit, scikit-learn, etc.)
-- **Development dependencies**: Testing, linting, documentation tools (pytest, black, mkdocs, etc.)
-
-All dependencies are defined in `pyproject.toml` and locked in `.lock` files for reproducible installations.
-
-#### Adding New Dependencies
-
-```bash
-# Add a production dependency
-# 1. Edit pyproject.toml and add to [project.dependencies]
-# 2. Regenerate lock file
-uv pip compile pyproject.toml -o requirements.lock
-
-# Add a development dependency
-# 1. Edit pyproject.toml and add to [project.optional-dependencies.dev]
-# 2. Regenerate lock file
-uv pip compile pyproject.toml --extra dev -o requirements-dev.lock
-```
-
-#### Installing Dependencies
-
-```bash
-# Production only (for Docker, deployment)
-uv pip sync requirements.lock
-
-# Development (for local development, includes all dev tools)
-uv pip sync requirements-dev.lock
-```
-
-#### Why uv?
-
-- ⚡ **10-100x faster** than pip for dependency resolution
-- 🔒 **Deterministic**: Same lock file = same environment every time
-- 🎯 **Better conflict resolution**: Clearer error messages for dependency conflicts
-- 📦 **Separation**: Clean split between production and development packages
-
-### Code Style
-
-This project uses:
-- **Black** for code formatting
-- **Type hints** throughout
-- **Docstrings** for all public APIs
-
-```bash
-# Format code
-uv run black ames_house_price_prediction/
-
-# Check code style
-uv run flake8 ames_house_price_prediction/
-
-# Sort imports
-uv run isort ames_house_price_prediction/
-
-# Type checking
-uv run mypy ames_house_price_prediction/
-```
-
----
-
-## 🐳 Docker Commands
-
-```bash
-# Start all services
-docker-compose up
-
-# Start in detached mode
-docker-compose up -d
-
-# Rebuild images
-docker-compose up --build
-
-# Stop all services
-docker-compose down
-
-# View logs
-docker-compose logs -f
-
-# View logs for specific service
-docker-compose logs -f api
-docker-compose logs -f app
-```
-
----
-
-## 📊 Model Information
-
-### Algorithm
-- **Ridge Regression** with polynomial features (degree 2)
-- **Target transformation**: QuantileTransformer for better distribution
-
-### Features Used
-- Lot Area (square feet)
-- Year Built
-- Year Remodeled/Added
-- Overall Quality (1-10 scale)
-- Overall Condition (1-10 scale)
-- **Engineered Features**:
-  - Lot Age (YrSold - YearBuilt)
-  - Years Since Remodel (YrSold - YearRemodAdd)
-
-### Preprocessing Pipeline
-1. Feature engineering (create derived features)
-2. Missing value imputation (median strategy)
-3. Robust scaling (handles outliers)
-4. Polynomial feature generation (degree 2)
-
----
-
-## 📖 Documentation
-
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Detailed architecture documentation
-- **[DATA_VALIDATION.md](docs/DATA_VALIDATION.md)** - Great Expectations data validation guide
-- **[REFACTORING_SUMMARY.md](REFACTORING_SUMMARY.md)** - Migration guide and changes
-- **[DEBUGGING_LOG.md](DEBUGGING_LOG.md)** - Issues resolved during development
-- **API Docs**: http://localhost:8000/docs (when running)
-
----
 
 ## 🤝 Contributing
 
-Contributions are welcome! This project follows a modular architecture that makes it easy to:
-
-- Add new model types (implement the `Model` interface)
-- Add new preprocessing strategies (implement the `Preprocessor` interface)
-- Add new features (extend the `FeatureTransformer`)
-- Add new endpoints to the API
-
----
+Contributions are welcome! See the [Contributing Guide](http://localhost:8002/contributing/) in the documentation.
 
 ## 📝 License
 
 This project is open source. See [LICENSE](LICENSE) for details.
 
----
+## 🔗 Links
 
-## 🙏 Acknowledgments
-
-- Built with the [Cookiecutter Data Science](https://drivendata.org/cookiecutter-data-science/) template
-- Uses the [Ames Housing Dataset](http://jse.amstat.org/v19n3/decock.pdf)
-- Powered by scikit-learn, FastAPI, and Streamlit
-
----
-
-## 📧 Contact
-
-For questions or feedback, please open an issue on GitHub.
+- **Documentation**: http://localhost:8002 (after running `docker compose up`)
+- **API Documentation**: http://localhost:8000/docs
+- **Dataset**: [Ames Housing Dataset](http://jse.amstat.org/v19n3/decock.pdf)
 
 ---
 
