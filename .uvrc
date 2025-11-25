@@ -1,0 +1,88 @@
+# UV Quick Reference
+# This file documents common uv commands for this project
+
+# ============================================
+# INSTALLATION
+# ============================================
+
+# Install uv (one-time setup)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install production dependencies
+uv pip sync requirements.lock
+
+# Install development dependencies (includes production)
+uv pip sync requirements-dev.lock
+
+# ============================================
+# TESTING
+# ============================================
+
+# Run all tests
+uv run pytest
+
+# Run specific test types
+uv run pytest -m unit
+uv run pytest -m integration
+uv run pytest -m e2e
+uv run pytest -m api
+
+# Run with verbose output
+uv run pytest -v
+
+# Run without coverage (faster)
+uv run pytest --no-cov
+
+# Run in parallel
+uv run pytest -n auto
+
+# ============================================
+# CODE QUALITY
+# ============================================
+
+# Format code
+uv run black ames_house_price_prediction/
+
+# Check code style
+uv run flake8 ames_house_price_prediction/
+
+# Sort imports
+uv run isort ames_house_price_prediction/
+
+# Type checking
+uv run mypy ames_house_price_prediction/
+
+# ============================================
+# DEPENDENCY MANAGEMENT
+# ============================================
+
+# Add production dependency:
+# 1. Edit pyproject.toml [project.dependencies]
+# 2. Run: uv pip compile pyproject.toml -o requirements.lock
+
+# Add development dependency:
+# 1. Edit pyproject.toml [project.optional-dependencies.dev]
+# 2. Run: uv pip compile pyproject.toml --extra dev -o requirements-dev.lock
+
+# ============================================
+# RUNNING THE APPLICATION
+# ============================================
+
+# Run ML pipeline
+uv run python -m ames_house_price_prediction.engine
+
+# Start FastAPI
+cd api && uv run uvicorn main:app --reload --port 8000
+
+# Start Streamlit
+cd app && uv run streamlit run main.py
+
+# ============================================
+# DOCKER
+# ============================================
+
+# Build and run with Docker Compose
+docker-compose up --build
+
+# Stop services
+docker-compose down

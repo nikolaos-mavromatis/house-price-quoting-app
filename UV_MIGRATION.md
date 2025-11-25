@@ -146,6 +146,33 @@ If you need to roll back to pip for any reason:
 
 However, we recommend staying with uv for the performance and reliability benefits.
 
+## Running Commands with uv
+
+Use `uv run` to execute commands in the project environment:
+
+```bash
+# Run tests
+uv run pytest
+
+# Run with specific options
+uv run pytest -v -m unit
+
+# Format code
+uv run black ames_house_price_prediction/
+
+# Check types
+uv run mypy ames_house_price_prediction/
+
+# Run linter
+uv run flake8 ames_house_price_prediction/
+```
+
+**Why use `uv run`?**
+- Automatically uses the correct Python environment
+- No need to activate virtual environment first
+- Ensures dependencies are installed
+- Works consistently across different systems
+
 ## Resources
 
 - [uv Documentation](https://github.com/astral-sh/uv)

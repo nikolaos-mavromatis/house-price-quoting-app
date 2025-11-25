@@ -382,25 +382,25 @@ The project includes a comprehensive test suite with **98 tests** achieving **94
 uv pip sync requirements-dev.lock
 
 # Run all tests with coverage report
-pytest
+uv run pytest
 
 # Run tests without coverage (faster)
-pytest --no-cov
+uv run pytest --no-cov
 
 # Run specific test categories
-pytest -m unit              # Unit tests only (fast)
-pytest -m integration       # Integration tests
-pytest -m e2e              # End-to-end tests
-pytest -m api              # API tests only
+uv run pytest -m unit              # Unit tests only (fast)
+uv run pytest -m integration       # Integration tests
+uv run pytest -m e2e              # End-to-end tests
+uv run pytest -m api              # API tests only
 
 # Run with verbose output
-pytest -v
+uv run pytest -v
 
 # Run tests in parallel (faster)
-pytest -n auto
+uv run pytest -n auto
 
 # Generate HTML coverage report
-pytest --cov-report=html
+uv run pytest --cov-report=html
 # View at: htmlcov/index.html
 ```
 
@@ -497,10 +497,16 @@ This project uses:
 
 ```bash
 # Format code
-black ames_house_price_prediction/
+uv run black ames_house_price_prediction/
 
-# Type checking (if mypy is installed)
-mypy ames_house_price_prediction/
+# Check code style
+uv run flake8 ames_house_price_prediction/
+
+# Sort imports
+uv run isort ames_house_price_prediction/
+
+# Type checking
+uv run mypy ames_house_price_prediction/
 ```
 
 ---
