@@ -4,10 +4,10 @@
   <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" alt="CCDS"/>
   <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black"/>
   <img src="https://img.shields.io/badge/Python-3.12-blue.svg" alt="Python 3.12"/>
-  <img src="https://img.shields.io/badge/FastAPI-0.104-009688.svg" alt="FastAPI"/>
-  <img src="https://img.shields.io/badge/Streamlit-1.28-FF4B4B.svg" alt="Streamlit"/>
-  <img src="https://img.shields.io/badge/coverage-94%25-brightgreen.svg" alt="Test Coverage: 94%"/>
-  <img src="https://img.shields.io/badge/tests-98%20passed-brightgreen.svg" alt="Tests: 98 passed"/>
+  <img src="https://img.shields.io/badge/FastAPI-0.122-009688.svg" alt="FastAPI"/>
+  <img src="https://img.shields.io/badge/Streamlit-1.51-FF4B4B.svg" alt="Streamlit"/>
+  <img src="https://img.shields.io/badge/coverage-83%25-brightgreen.svg" alt="Test Coverage: 83%"/>
+  <img src="https://img.shields.io/badge/tests-136%20passed-brightgreen.svg" alt="Tests: 136 passed"/>
 </p>
 
 <p align="center">
@@ -413,7 +413,7 @@ else:
 
 ### Running Tests
 
-The project includes a comprehensive test suite with **98 tests** achieving **94% code coverage**.
+The project includes a comprehensive test suite with **136 tests** achieving **83% code coverage**.
 
 ```bash
 # Install test dependencies with uv
@@ -444,30 +444,41 @@ uv run pytest --cov-report=html
 
 #### Test Structure
 
-- **Unit Tests (65 tests)**: Fast, isolated component tests with mocks
-  - Feature transformer: 14 tests
-  - Preprocessing: 18 tests
-  - Model: 20 tests
-  - Service: 13 tests
+- **Unit Tests**: Fast, isolated component tests with mocks
+  - Core components (feature transformer, preprocessing, model, service)
+  - Configuration modules
+  - Data preparation
+  - Feature engineering
+  - Validation logic
 
-- **Integration Tests (28 tests)**: Multi-component interactions
-  - Prediction pipeline: 12 tests (with real trained models)
-  - API endpoints: 23 tests (FastAPI with mocks)
+- **Integration Tests**: Multi-component interactions
+  - Prediction pipeline tests (with real trained models)
+  - API endpoint tests (23 tests)
 
 - **E2E Tests (5 tests)**: Complete workflow validation
   - Full training-to-prediction pipeline
+  - Model quality validation
+  - Reproducibility tests
 
 #### Coverage by Module
 
 | Module | Coverage |
 |--------|----------|
+| `config/*` | 100% |
 | `core/feature_transformer.py` | 100% |
 | `core/preprocessing.py` | 100% |
 | `core/service.py` | 100% |
+| `data/dataset.py` | 100% |
+| `features/features.py` | 100% |
+| `modeling/train.py` | 100% |
+| `modeling/predict.py` | 100% |
+| `validation/expectations.py` | 100% |
 | `core/model.py` | 95% |
-| `config/*` | 100% |
+| `validation/validators.py` | 90% |
 | `api/main.py` | 88% |
-| **Overall** | **94%** |
+| `core/interfaces.py` | 76% |
+| `validation/custom_expectations.py` | 0% (not used) |
+| **Overall** | **83%** |
 
 #### Quick Verification Tests
 
