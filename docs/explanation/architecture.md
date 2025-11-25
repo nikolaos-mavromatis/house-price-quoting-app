@@ -93,9 +93,13 @@ Separated configuration into logical modules for clarity:
 | `settings.py` | App settings | `LOG_LEVEL`, environment vars |
 
 **Benefits:**
+
 - ✅ Single source of truth for configuration
+
 - ✅ Easy to modify without touching unrelated settings
+
 - ✅ Environment-specific configs
+
 - ✅ Type-safe with Python modules
 
 **Example:**

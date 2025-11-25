@@ -15,6 +15,14 @@ services:
     networks:
       - housing-app
 
+  docs:
+    build:
+      dockerfile: ./dockerfile-docs
+    ports:
+      - "8002:8002"
+    networks:
+      - housing-app
+
 networks:
   housing-app:
     driver: bridge

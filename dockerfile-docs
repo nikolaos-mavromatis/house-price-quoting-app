@@ -1,0 +1,50 @@
+# Stage 1: Builder - Build the documentation
+FROM python:3.12-slim AS builder
+
+# Set working directory
+WORKDIR /docs
+
+# Install MkDocs and required plugins
+RUN pip install --no-cache-dir \
+    "mkdocs-material>=9.5" \
+    "mkdocstrings[python]>=0.24" \
+    "mkdocs-glightbox>=0.3" \
+    "pymdown-extensions>=10.0"
+
+# Copy documentation source files
+COPY ./mkdocs.yml .
+COPY ./docs ./docs/
+
+# Copy source code for mkdocstrings to generate API documentation
+COPY ./api ./api/
+COPY ./app ./app/
+COPY ./ames_house_price_prediction ./ames_house_price_prediction/
+COPY ./pyproject.toml .
+
+# Build the static documentation site
+RUN mkdocs build --verbose
+
+# Stage 2: Runtime - Serve with nginx
+FROM nginx:alpine
+
+# Copy built documentation from builder stage
+COPY --from=builder /docs/site /usr/share/nginx/html
+
+# Create custom nginx configuration
+RUN echo 'server {' > /etc/nginx/conf.d/default.conf && \
+    echo '    listen 8002;' >> /etc/nginx/conf.d/default.conf && \
+    echo '    server_name localhost;' >> /etc/nginx/conf.d/default.conf && \
+    echo '    root /usr/share/nginx/html;' >> /etc/nginx/conf.d/default.conf && \
+    echo '    index index.html;' >> /etc/nginx/conf.d/default.conf && \
+    echo '    location / {' >> /etc/nginx/conf.d/default.conf && \
+    echo '        try_files $uri $uri/ /index.html;' >> /etc/nginx/conf.d/default.conf && \
+    echo '    }' >> /etc/nginx/conf.d/default.conf && \
+    echo '    gzip on;' >> /etc/nginx/conf.d/default.conf && \
+    echo '    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;' >> /etc/nginx/conf.d/default.conf && \
+    echo '}' >> /etc/nginx/conf.d/default.conf
+
+# Expose port 8002
+EXPOSE 8002
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
