@@ -1,41 +1,199 @@
-site_name: House Price Quoting App
+site_name: AMES House Price Prediction
+site_description: A production-ready ML system for predicting house prices
 site_author: Nikolaos Mavromatis
+site_url: https://nikolaos-mavromatis.github.io/house-price-quoting-app
 
 repo_url: https://github.com/nikolaos-mavromatis/ames_house_price_prediction
 repo_name: nikolaos-mavromatis/house-price-quoting-app
+edit_uri: edit/main/docs/
+
+copyright: Copyright &copy; 2024 Nikolaos Mavromatis
 
 nav:
-  - index.md
-  - getting-started.md
-  - methodology.md
+  - Home: index.md
+  - Tutorials:
+      - tutorials/index.md
+      - Quick Start: tutorials/quickstart.md
+      - Train Your First Model: tutorials/first-model.md
+      - Custom Features: tutorials/custom-features.md
+      - Deploy with Docker: tutorials/deploy-docker.md
+  - How-To Guides:
+      - how-to/index.md
+      - Run Tests: how-to/run-tests.md
+      - Manage Dependencies: how-to/add-dependencies.md
+      - Data Validation: how-to/validate-data.md
+      - API Integration: how-to/api-integration.md
+      - Customize Models: how-to/customize-model.md
+      - Troubleshooting: how-to/troubleshooting.md
+  - Reference:
+      - reference/index.md
+      - API Endpoints: reference/api-endpoints.md
+      - Configuration: reference/configuration.md
+      - CLI Commands: reference/cli-commands.md
+      - Data Schema: reference/data-schema.md
+      - Model Specs: reference/model-specs.md
+      - Code API:
+          - Core: reference/code-api/core.md
+          - Data: reference/code-api/data.md
+          - Features: reference/code-api/features.md
+          - Modeling: reference/code-api/modeling.md
+          - Validation: reference/code-api/validation.md
+  - Explanation:
+      - explanation/index.md
+      - Architecture: explanation/architecture.md
+      - ML Pipeline: explanation/ml-pipeline.md
+      - Validation Strategy: explanation/validation-strategy.md
+      - Dependency Management: explanation/dependency-management.md
+      - Testing Strategy: explanation/testing-strategy.md
+      - Feature Engineering: explanation/feature-engineering.md
+  - About:
+      - Changelog: changelog.md
+      - Contributing: contributing.md
 
 theme:
   name: material
   language: en
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
   font:
-    text: Avenir Next
+    text: Roboto
+    code: Roboto Mono
   icon:
-    logo: material/home
+    logo: material/home-analytics
     repo: fontawesome/brands/github
   features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
     - navigation.path
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - search.share
     - content.code.copy
     - content.code.annotate
+    - content.tabs.link
+    - toc.follow
 
 plugins:
-  - glightbox
-  - mkdocstrings
+  - search:
+      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
+  - glightbox:
+      touchNavigation: true
+      loop: false
+      effect: zoom
+      slide_effect: slide
+      width: 100%
+      height: auto
+      zoomable: true
+      draggable: true
+      skip_classes:
+        - custom-skip-class-name
+      auto_caption: false
+      caption_position: bottom
+  - mkdocstrings:
+      enabled: true
+      default_handler: python
+      handlers:
+        python:
+          paths: [.]
+          options:
+            show_source: true
+            show_root_heading: true
+            show_category_heading: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            members_order: source
+            docstring_style: google
+            docstring_section_style: table
+            merge_init_into_class: true
+            show_if_no_docstring: false
+            inherited_members: false
+            filters:
+              - "!^_"
+            annotations_path: brief
 
 markdown_extensions:
+  - abbr
   - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 4
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
   - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - attr_list
-  - md_in_html
-  - pymdownx.blocks.caption
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/nikolaos-mavromatis
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/nikolaos-mavromatis
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
+  version:
+    provider: mike
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
