@@ -44,7 +44,7 @@
 ### Prerequisites
 
 - Docker and Docker Compose (recommended)
-- OR Python 3.12+ and pip
+- OR Python 3.12+ and uv package manager
 
 ### Option 1: Docker Compose (Recommended)
 
@@ -67,17 +67,25 @@ That's it! 🎉 The application is now running:
 
 ### Option 2: Local Development Setup
 
+This project uses [uv](https://github.com/astral-sh/uv) for fast, reliable dependency management.
+
 ```bash
 # Clone the repository
 git clone <repository-url>
 cd house-price-quoting-app
 
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
 # Create virtual environment
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-# Install dependencies
-pip install -r requirements.txt
+# Install production dependencies
+uv pip sync requirements.lock
+
+# OR install with development dependencies
+uv pip sync requirements-dev.lock
 
 # Run the complete ML pipeline (optional - pre-trained models included)
 python -m ames_house_price_prediction.engine
@@ -171,7 +179,9 @@ house-price-quoting-app/
 ├── docs/                          # Documentation
 ├── notebooks/                     # Jupyter notebooks
 ├── docker-compose.yml            # Multi-container orchestration
-└── requirements.txt              # Python dependencies
+├── requirements.lock             # Production dependencies (uv)
+├── requirements-dev.lock         # Development dependencies (uv)
+└── pyproject.toml                # Project configuration & dependencies
 ```
 
 ---
@@ -368,8 +378,8 @@ else:
 The project includes a comprehensive test suite with **98 tests** achieving **94% code coverage**.
 
 ```bash
-# Install test dependencies
-pip install -r requirements-dev.txt
+# Install test dependencies with uv
+uv pip sync requirements-dev.lock
 
 # Run all tests with coverage report
 pytest
@@ -435,6 +445,48 @@ price = service.predict_single(LotArea=8450, YearBuilt=2003, YearRemodAdd=2003, 
 print(f'✓ Prediction: \${price:,.2f}')
 "
 ```
+
+### Dependency Management
+
+This project uses **uv** for fast, deterministic dependency resolution with separate production and development packages.
+
+#### Package Structure
+
+- **Production dependencies**: Core packages needed to run the application (FastAPI, Streamlit, scikit-learn, etc.)
+- **Development dependencies**: Testing, linting, documentation tools (pytest, black, mkdocs, etc.)
+
+All dependencies are defined in `pyproject.toml` and locked in `.lock` files for reproducible installations.
+
+#### Adding New Dependencies
+
+```bash
+# Add a production dependency
+# 1. Edit pyproject.toml and add to [project.dependencies]
+# 2. Regenerate lock file
+uv pip compile pyproject.toml -o requirements.lock
+
+# Add a development dependency
+# 1. Edit pyproject.toml and add to [project.optional-dependencies.dev]
+# 2. Regenerate lock file
+uv pip compile pyproject.toml --extra dev -o requirements-dev.lock
+```
+
+#### Installing Dependencies
+
+```bash
+# Production only (for Docker, deployment)
+uv pip sync requirements.lock
+
+# Development (for local development, includes all dev tools)
+uv pip sync requirements-dev.lock
+```
+
+#### Why uv?
+
+- ⚡ **10-100x faster** than pip for dependency resolution
+- 🔒 **Deterministic**: Same lock file = same environment every time
+- 🎯 **Better conflict resolution**: Clearer error messages for dependency conflicts
+- 📦 **Separation**: Clean split between production and development packages
 
 ### Code Style
 

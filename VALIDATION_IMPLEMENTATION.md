@@ -241,7 +241,7 @@ Note: This downgraded `numpy` from 2.2.6 to 1.26.4 due to GE compatibility requi
 9. `VALIDATION_IMPLEMENTATION.md` (this file)
 
 ### Modified Files (4)
-1. `requirements.txt` - Added great-expectations
+1. `pyproject.toml` - Added great-expectations dependency
 2. `ames_house_price_prediction/data/dataset.py` - Added validation
 3. `ames_house_price_prediction/features/features.py` - Added validation
 4. `ames_house_price_prediction/modeling/predict.py` - Added validation
