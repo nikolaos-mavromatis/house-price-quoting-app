@@ -15,6 +15,10 @@ from ames_house_price_prediction.core.feature_transformer import (
     HouseFeaturesTransformer,
 )
 from ames_house_price_prediction.core.preprocessing import SklearnPreprocessor
+from ames_house_price_prediction.validation import (
+    ValidationError,
+    validate_engineered_features,
+)
 
 app = typer.Typer()
 
@@ -25,6 +29,7 @@ def main(
     preprocessor_path: Path = PREPROCESSOR_PATH,
     features_path: Path = PROCESSED_DATA_DIR / "features.parquet",
     labels_path: Path = PROCESSED_DATA_DIR / "labels.parquet",
+    skip_validation: bool = False,
 ):
     """Generate features from dataset and save the fitted preprocessor.
 
@@ -33,6 +38,7 @@ def main(
         preprocessor_path: Path to save the fitted preprocessor
         features_path: Path to save the transformed features
         labels_path: Path to save the target labels
+        skip_validation: Skip Great Expectations validation
     """
     logger.info("Generating features from dataset...")
     input_df = pd.read_parquet(input_path)
@@ -40,6 +46,20 @@ def main(
     # Apply feature engineering
     feature_transformer = HouseFeaturesTransformer()
     df = feature_transformer.transform(input_df)
+
+    # Validate engineered features
+    if not skip_validation:
+        try:
+            validation_result = validate_engineered_features(
+                df, include_target=True, fail_on_error=True
+            )
+            logger.info(f"Feature validation: {validation_result}")
+        except ValidationError as e:
+            logger.error(f"Feature validation failed: {e}")
+            logger.error(e.validation_result.get_failure_summary())
+            raise typer.Exit(code=1)
+    else:
+        logger.warning("Skipping feature validation (--skip-validation flag set)")
 
     # Create and fit preprocessor
     preprocessor = SklearnPreprocessor()

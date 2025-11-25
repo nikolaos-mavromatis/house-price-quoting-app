@@ -35,6 +35,7 @@
 - **📊 Feature Engineering**: Automated feature transformation pipeline
 - **✅ Production Ready**: Input validation, error handling, and comprehensive logging
 - **🧪 Thoroughly Tested**: 98 tests with 94% code coverage (unit, integration, and E2E)
+- **🔍 Data Validation**: Great Expectations integration for schema and quality validation
 
 ---
 
@@ -316,12 +317,51 @@ Get a house price prediction using JSON body (same parameters as GET).
 # Complete pipeline (data prep → features → training → predictions)
 python -m ames_house_price_prediction.engine
 
-# Individual steps
-python -m ames_house_price_prediction.data.dataset        # Prepare data
-python -m ames_house_price_prediction.features.features   # Generate features
+# Individual steps with data validation
+python -m ames_house_price_prediction.data.dataset        # Prepare data (validates raw data)
+python -m ames_house_price_prediction.features.features   # Generate features (validates engineered features)
 python -m ames_house_price_prediction.modeling.train      # Train model
-python -m ames_house_price_prediction.modeling.predict    # Make predictions
+python -m ames_house_price_prediction.modeling.predict    # Make predictions (validates test data)
+
+# Skip validation for debugging (not recommended for production)
+python -m ames_house_price_prediction.data.dataset --skip-validation
+python -m ames_house_price_prediction.features.features --skip-validation
+python -m ames_house_price_prediction.modeling.predict --skip-validation
 ```
+
+### Data Validation
+
+The project uses **Great Expectations** for comprehensive data validation throughout the ML pipeline:
+
+```bash
+# Validation runs automatically in the pipeline
+python -m ames_house_price_prediction.data.dataset     # ✓ Validates raw data
+python -m ames_house_price_prediction.features.features # ✓ Validates engineered features
+python -m ames_house_price_prediction.modeling.predict  # ✓ Validates test data schema
+
+# Programmatic usage
+from ames_house_price_prediction.validation import validate_raw_data
+import pandas as pd
+
+df = pd.read_csv("data/raw/train.csv")
+result = validate_raw_data(df, include_target=True, fail_on_error=False)
+
+if result.success:
+    print("✓ Data validation passed")
+else:
+    print("✗ Validation failed:")
+    print(result.get_failure_summary())
+```
+
+**Validation Features**:
+- ✅ Schema validation (column presence, types)
+- ✅ Range validation (value bounds, outlier detection)
+- ✅ Cross-field validation (YearRemodAdd >= YearBuilt)
+- ✅ Business rule validation (house age < 200 years)
+- ✅ Derived feature validation (LotAge, YearsSinceRemod)
+- ✅ Data quality checks (NaN, infinite values)
+
+📖 **[Read the full Data Validation documentation](docs/DATA_VALIDATION.md)**
 
 ### Running Tests
 
@@ -465,6 +505,7 @@ docker-compose logs -f app
 ## 📖 Documentation
 
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - Detailed architecture documentation
+- **[DATA_VALIDATION.md](docs/DATA_VALIDATION.md)** - Great Expectations data validation guide
 - **[REFACTORING_SUMMARY.md](REFACTORING_SUMMARY.md)** - Migration guide and changes
 - **[DEBUGGING_LOG.md](DEBUGGING_LOG.md)** - Issues resolved during development
 - **API Docs**: http://localhost:8000/docs (when running)
