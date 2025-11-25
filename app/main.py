@@ -1,10 +1,8 @@
 """Streamlit application for house price prediction."""
 
-from babel.numbers import format_currency
 import requests
-
 import streamlit as st
-
+from babel.numbers import format_currency
 
 main, help_tab = st.tabs(["Main", "Help"])
 
@@ -22,7 +20,7 @@ with main:
         with col1:
             build_year_val = st.number_input(
                 "Build Year",
-                value=None,
+                value=2000,
                 step=1,
                 help="The year the house was originally built",
             )
@@ -44,7 +42,7 @@ with main:
         with col2:
             area_val = st.number_input(
                 "Living Area (in Sq.Ft.)",
-                value=None,
+                value=1000,
                 help="Total lot area in square feet",
             )
             cond_val = st.slider(
