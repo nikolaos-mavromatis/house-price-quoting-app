@@ -1,0 +1,163 @@
+/* Custom styles for AMES House Price Prediction documentation */
+
+/* Custom card grid styling */
+.md-typeset .grid.cards {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 1rem;
+}
+
+/* Enhanced admonition styling */
+.md-typeset .admonition {
+  border-left: 0.2rem solid;
+  border-radius: 0.2rem;
+  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.05);
+}
+
+/* Code block enhancements */
+.md-typeset pre {
+  border-radius: 0.4rem;
+}
+
+.md-typeset code {
+  border-radius: 0.2rem;
+  padding: 0.1em 0.3em;
+}
+
+/* Table styling */
+.md-typeset table:not([class]) {
+  border-radius: 0.2rem;
+  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.05);
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+}
+
+/* Mermaid diagram styling */
+.mermaid {
+  text-align: center;
+  margin: 2em 0;
+}
+
+/* Custom badge styling */
+.md-typeset img[alt*="badge"] {
+  margin: 0.2em;
+  vertical-align: middle;
+}
+
+/* Footer customization */
+.md-footer-meta {
+  background-color: var(--md-footer-bg-color);
+}
+
+/* Navigation tabs enhancement */
+.md-tabs {
+  box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.1);
+}
+
+/* Search box styling */
+.md-search__input {
+  border-radius: 0.2rem;
+}
+
+/* Custom color for inline code */
+.md-typeset code:not(.hljs) {
+  background-color: var(--md-code-bg-color);
+  color: var(--md-code-fg-color);
+}
+
+/* Enhanced card hover effect */
+.md-typeset .grid.cards > :hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+  box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+/* Custom spacing for hero section */
+.md-typeset h1:first-child {
+  margin-top: 0;
+}
+
+/* Improved button styling */
+.md-button {
+  border-radius: 0.2rem;
+  transition: all 0.2s ease;
+}
+
+.md-button:hover {
+  transform: translateY(-1px);
+}
+
+/* Enhanced table of contents */
+.md-sidebar--secondary .md-sidebar__scrollwrap {
+  margin-top: 1rem;
+}
+
+/* Custom styling for version info */
+.md-version {
+  border-radius: 0.2rem;
+}
+
+/* Improved spacing for lists */
+.md-typeset ul li,
+.md-typeset ol li {
+  margin-bottom: 0.5em;
+}
+
+/* Enhanced details/summary (dropdowns) */
+.md-typeset details {
+  margin: 1em 0;
+  padding: 0.5em;
+  border-radius: 0.2rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset details summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.5em;
+  margin: -0.5em;
+  border-radius: 0.2rem;
+  transition: background-color 0.2s ease;
+}
+
+.md-typeset details summary:hover {
+  background-color: var(--md-default-fg-color--lightest);
+}
+
+/* Custom emoji sizing */
+.md-typeset .twemoji {
+  vertical-align: text-bottom;
+}
+
+/* Improve code copy button visibility */
+.md-clipboard {
+  transition: opacity 0.2s ease;
+}
+
+pre:hover .md-clipboard {
+  opacity: 1;
+}
+
+/* Center align for specific content */
+div[align="center"] {
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 76.1875em) {
+  .md-typeset .grid.cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark mode specific adjustments */
+[data-md-color-scheme="slate"] {
+  --md-code-bg-color: hsla(var(--md-hue), 15%, 15%, 1);
+  --md-code-fg-color: hsla(var(--md-hue), 75%, 90%, 1);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  background-color: var(--md-default-bg-color--light);
+}
