@@ -1,29 +1,24 @@
+"""Feature generation script using the new modular architecture."""
+
 from pathlib import Path
 
-from sklearn.impute import SimpleImputer
+import pandas as pd
 import typer
 from loguru import logger
-import pandas as pd
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import (
-    OneHotEncoder,
-    OrdinalEncoder,
-    RobustScaler,
-    PolynomialFeatures,
-)
-from pickle import dump
 
 from ames_house_price_prediction.config import (
-    CAT_FEATURES,
-    MODELS_DIR,
-    NUM_FEATURES,
-    ORD_FEATURES,
+    PREPROCESSOR_PATH,
     PROCESSED_DATA_DIR,
     TARGET,
 )
-from ames_house_price_prediction.features.utils import make_features
-
+from ames_house_price_prediction.core.feature_transformer import (
+    HouseFeaturesTransformer,
+)
+from ames_house_price_prediction.core.preprocessing import SklearnPreprocessor
+from ames_house_price_prediction.validation import (
+    ValidationError,
+    validate_engineered_features,
+)
 
 app = typer.Typer()
 
@@ -31,57 +26,50 @@ app = typer.Typer()
 @app.command()
 def main(
     input_path: Path = PROCESSED_DATA_DIR / "dataset.parquet",
-    preprocessor_path: Path = MODELS_DIR / "preprocessor.pkl",
+    preprocessor_path: Path = PREPROCESSOR_PATH,
     features_path: Path = PROCESSED_DATA_DIR / "features.parquet",
     labels_path: Path = PROCESSED_DATA_DIR / "labels.parquet",
+    skip_validation: bool = False,
 ):
+    """Generate features from dataset and save the fitted preprocessor.
+
+    Args:
+        input_path: Path to input dataset
+        preprocessor_path: Path to save the fitted preprocessor
+        features_path: Path to save the transformed features
+        labels_path: Path to save the target labels
+        skip_validation: Skip Great Expectations validation
+    """
     logger.info("Generating features from dataset...")
     input_df = pd.read_parquet(input_path)
 
-    df = input_df.pipe(make_features)
+    # Apply feature engineering
+    feature_transformer = HouseFeaturesTransformer()
+    df = feature_transformer.transform(input_df)
 
-    numeric_transformer = Pipeline(
-        steps=[("imputer", SimpleImputer(strategy="median")), ("scaler", RobustScaler())]
-    )
-    ordinal_transformer = Pipeline(
-        steps=[
-            (
-                "ord_encoding",
-                OrdinalEncoder(
-                    dtype=int,
-                    categories=len(ORD_FEATURES) * [["Po", "Fa", "TA", "Gd", "Ex"]],
-                    handle_unknown="use_encoded_value",
-                    unknown_value=-1,
-                ),
+    # Validate engineered features
+    if not skip_validation:
+        try:
+            validation_result = validate_engineered_features(
+                df, include_target=True, fail_on_error=True
             )
-        ]
-    )
-    categorical_transformer = Pipeline(
-        steps=[
-            ("oh_encoding", OneHotEncoder(drop="first", sparse_output=False)),
-        ]
-    )
+            logger.info(f"Feature validation: {validation_result}")
+        except ValidationError as e:
+            logger.error(f"Feature validation failed: {e}")
+            logger.error(e.validation_result.get_failure_summary())
+            raise typer.Exit(code=1)
+    else:
+        logger.warning("Skipping feature validation (--skip-validation flag set)")
 
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ("num", numeric_transformer, NUM_FEATURES),
-            ("ord", ordinal_transformer, ORD_FEATURES),
-            ("cat", categorical_transformer, CAT_FEATURES),
-        ],
-        remainder="drop",
-        verbose_feature_names_out=False,
-    )
-    pipe = Pipeline(
-        steps=[
-            ("preprocessor", preprocessor),
-            ("poly", PolynomialFeatures(2, include_bias=True)),
-        ]
-    )
-    transformed_df = pd.DataFrame(pipe.fit_transform(df), columns=pipe.get_feature_names_out())
+    # Create and fit preprocessor
+    preprocessor = SklearnPreprocessor()
+    transformed_df = preprocessor.fit_transform(df)
 
-    with open(preprocessor_path, "wb") as f:
-        dump(pipe, f, protocol=5)
+    # Save the fitted preprocessor
+    preprocessor.save(preprocessor_path)
+    logger.info(f"Saved preprocessor to {preprocessor_path}")
 
+    # Save features and labels
     transformed_df.to_parquet(features_path, index=False)
     df[[TARGET]].to_parquet(labels_path, index=False)
 
