@@ -32,18 +32,13 @@
 
 A production-ready machine learning system for predicting house prices using the AMES Housing dataset. Built with modern Python tools and best practices, featuring comprehensive data validation, extensive testing, and clean architecture.
 
-<div align="center">
+<div align="center" markdown>
 
 ![Python](https://img.shields.io/badge/Python-3.12-blue.svg)
-
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.122-009688.svg)
-
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.51-FF4B4B.svg)
-
 ![Tests](https://img.shields.io/badge/tests-136%20passed-brightgreen.svg)
-
 ![Coverage](https://img.shields.io/badge/coverage-83%25-brightgreen.svg)
-
 ![Code style](https://img.shields.io/badge/code%20style-black-000000.svg)
 
 </div>
@@ -227,7 +222,7 @@ graph TB
 
 ## 🛠️ Technology Stack
 
-<div align="center">
+<div align="center" markdown>
 
 ![pandas](https://img.shields.io/badge/pandas-150458?logo=pandas&logoColor=fff&style=for-the-badge)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?logo=scikitlearn&logoColor=fff&style=for-the-badge)
