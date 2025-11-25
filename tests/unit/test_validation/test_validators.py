@@ -242,11 +242,36 @@ class TestValidatePreprocessedFeatures:
 
     def test_validate_valid_preprocessed_dataframe(self):
         """Test validation passes for valid preprocessed DataFrame."""
+        # Need at least 10 rows to pass row count validation
         preprocessed_data = pd.DataFrame(
             {
-                "feature_0": [0.5, -0.3, 0.8],
-                "feature_1": [1.2, -1.5, 0.0],
-                "feature_2": [0.0, 0.0, 0.1],
+                "feature_0": [
+                    0.5,
+                    -0.3,
+                    0.8,
+                    0.2,
+                    -0.1,
+                    0.6,
+                    -0.5,
+                    0.9,
+                    0.3,
+                    -0.2,
+                    0.7,
+                ],
+                "feature_1": [
+                    1.2,
+                    -1.5,
+                    0.0,
+                    0.8,
+                    -0.9,
+                    1.1,
+                    -1.2,
+                    0.5,
+                    0.9,
+                    -0.8,
+                    1.0,
+                ],
+                "feature_2": [0.0, 0.0, 0.1, -0.1, 0.2, 0.0, 0.1, -0.2, 0.1, 0.0, -0.1],
             }
         )
 
@@ -258,11 +283,20 @@ class TestValidatePreprocessedFeatures:
 
     def test_validate_valid_preprocessed_array(self):
         """Test validation passes for valid preprocessed numpy array."""
+        # Need at least 10 rows to pass row count validation
         preprocessed_array = np.array(
             [
                 [0.5, 1.2, 0.0],
                 [-0.3, -1.5, 0.0],
                 [0.8, 0.0, 0.1],
+                [0.2, 0.8, -0.1],
+                [-0.1, -0.9, 0.2],
+                [0.6, 1.1, 0.0],
+                [-0.5, -1.2, 0.1],
+                [0.9, 0.5, -0.2],
+                [0.3, 0.9, 0.1],
+                [-0.2, -0.8, 0.0],
+                [0.7, 1.0, -0.1],
             ]
         )
 
@@ -376,8 +410,8 @@ class TestValidationIntegration:
         )
         assert engineered_result.success is True
 
-        # Step 4: Create preprocessed data (simulated)
-        preprocessed_array = np.random.randn(3, 10)  # 3 samples, 10 features
+        # Step 4: Create preprocessed data (simulated) - need at least 10 rows
+        preprocessed_array = np.random.randn(11, 10)  # 11 samples, 10 features
 
         # Step 5: Validate preprocessed features
         preprocessed_result = validate_preprocessed_features(

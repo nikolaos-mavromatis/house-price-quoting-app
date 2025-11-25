@@ -76,7 +76,7 @@ class TestRawDataSuite:
             exp
             for exp in suite.expectations
             if exp.expectation_type
-            == "expect_column_pair_values_A_to_be_greater_than_or_equal_to_B"
+            == "expect_column_pair_values_a_to_be_greater_than_b"
         ]
 
         assert len(cross_field_expectations) >= 3  # YearRemodAdd >= YearBuilt, etc.

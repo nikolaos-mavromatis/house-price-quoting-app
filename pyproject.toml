@@ -42,6 +42,7 @@ addopts = [
     "--strict-markers",
     "--cov=ames_house_price_prediction.core",
     "--cov=ames_house_price_prediction.config",
+    "--cov=ames_house_price_prediction.validation",
     "--cov=api",
     "--cov-report=html",
     "--cov-report=term-missing:skip-covered",

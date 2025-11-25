@@ -16,6 +16,7 @@ from ames_house_price_prediction.validation.expectations import (
     create_raw_data_suite,
 )
 from ames_house_price_prediction.validation.validators import (
+    ValidationError,
     ValidationResult,
     validate_engineered_features,
     validate_raw_data,
@@ -27,6 +28,7 @@ __all__ = [
     "validate_engineered_features",
     "validate_test_data",
     "ValidationResult",
+    "ValidationError",
     "create_raw_data_suite",
     "create_engineered_features_suite",
     "create_preprocessed_features_suite",

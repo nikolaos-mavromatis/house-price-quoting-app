@@ -45,9 +45,17 @@ class ValidationResult:
     def __str__(self) -> str:
         """Human-readable summary of validation results."""
         if self.success:
-            return f"✓ Validation passed ({self.statistics['successful']}/{self.statistics['evaluated']} expectations)"
+            successful = self.statistics.get(
+                "successful_expectations", self.statistics.get("successful", 0)
+            )
+            evaluated = self.statistics.get(
+                "evaluated_expectations", self.statistics.get("evaluated", 0)
+            )
+            return f"✓ Validation passed ({successful}/{evaluated} expectations)"
         else:
-            failed_count = self.statistics["unsuccessful"]
+            failed_count = self.statistics.get(
+                "unsuccessful_expectations", self.statistics.get("unsuccessful", 0)
+            )
             return f"✗ Validation failed ({failed_count} expectations failed)"
 
     def get_failure_summary(self) -> str:
